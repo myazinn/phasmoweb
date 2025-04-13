@@ -1,0 +1,28 @@
+import {Evidence, Ghost} from './models.js';
+
+export const ghostEvidences: Record<Ghost, Evidence[]> = {
+    [Ghost.BANSHEE]: [Evidence.DOTS_PROJECTOR, Evidence.GHOST_ORB, Evidence.ULTRAVIOLET],
+    [Ghost.DEMON]: [Evidence.GHOST_WRITING, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.DEOGEN]: [Evidence.GHOST_WRITING, Evidence.ULTRAVIOLET, Evidence.SPIRIT_BOX],
+    [Ghost.GORYO]: [Evidence.DOTS_PROJECTOR, Evidence.EMF, Evidence.ULTRAVIOLET],
+    [Ghost.HANTU]: [Evidence.GHOST_ORB, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.JINN]: [Evidence.EMF, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.MARE]: [Evidence.GHOST_WRITING, Evidence.GHOST_ORB, Evidence.SPIRIT_BOX],
+    [Ghost.MOROI]: [Evidence.GHOST_WRITING, Evidence.FREEZING_TEMPERATURE, Evidence.SPIRIT_BOX],
+    [Ghost.MYLING]: [Evidence.GHOST_WRITING, Evidence.EMF, Evidence.ULTRAVIOLET],
+    [Ghost.OBAKE]: [Evidence.EMF, Evidence.GHOST_ORB, Evidence.ULTRAVIOLET],
+    [Ghost.ONI]: [Evidence.DOTS_PROJECTOR, Evidence.EMF, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.ONRYO]: [Evidence.GHOST_ORB, Evidence.FREEZING_TEMPERATURE, Evidence.SPIRIT_BOX],
+    [Ghost.PHANTOM]: [Evidence.DOTS_PROJECTOR, Evidence.ULTRAVIOLET, Evidence.SPIRIT_BOX],
+    [Ghost.POLTERGEIST]: [Evidence.GHOST_WRITING, Evidence.ULTRAVIOLET, Evidence.SPIRIT_BOX],
+    [Ghost.RAIJU]: [Evidence.DOTS_PROJECTOR, Evidence.EMF, Evidence.GHOST_ORB],
+    [Ghost.REVENANT]: [Evidence.GHOST_WRITING, Evidence.GHOST_ORB, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.SHADE]: [Evidence.GHOST_WRITING, Evidence.EMF, Evidence.FREEZING_TEMPERATURE],
+    [Ghost.SPIRIT]: [Evidence.GHOST_WRITING, Evidence.EMF, Evidence.SPIRIT_BOX],
+    [Ghost.THAYE]: [Evidence.DOTS_PROJECTOR, Evidence.GHOST_WRITING, Evidence.GHOST_ORB],
+    [Ghost.THE_MIMIC]: [Evidence.GHOST_ORB, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE, Evidence.SPIRIT_BOX],
+    [Ghost.THE_TWINS]: [Evidence.EMF, Evidence.FREEZING_TEMPERATURE, Evidence.SPIRIT_BOX],
+    [Ghost.WRAITH]: [Evidence.DOTS_PROJECTOR, Evidence.EMF, Evidence.SPIRIT_BOX],
+    [Ghost.YOKAI]: [Evidence.DOTS_PROJECTOR, Evidence.GHOST_ORB, Evidence.SPIRIT_BOX],
+    [Ghost.YUREI]: [Evidence.DOTS_PROJECTOR, Evidence.GHOST_ORB, Evidence.FREEZING_TEMPERATURE],
+};
