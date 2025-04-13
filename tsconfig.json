@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["DOM", "ES2019"],
+    "lib": [
+      "DOM",
+      "ES2019"
+    ],
     "strict": true,
     "module": "ES6",
     "moduleResolution": "node",
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "removeComments": false,
+  "noEmitHelpers": false,
+  "sourceMap": true,
+  "pretty": true
 }

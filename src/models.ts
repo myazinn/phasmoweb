@@ -1,13 +1,3 @@
-export enum Evidence {
-    EMF = 'EMF',
-    ULTRAVIOLET = 'ULTRAVIOLET',
-    GHOST_WRITING = 'GHOST_WRITING',
-    FREEZING_TEMPERATURE = 'FREEZING_TEMPERATURE',
-    DOTS_PROJECTOR = 'DOTS_PROJECTOR',
-    GHOST_ORB = 'GHOST_ORB',
-    SPIRIT_BOX = 'SPIRIT_BOX',
-}
-
 export enum Ghost {
     BANSHEE = 'BANSHEE',
     DEMON = 'DEMON',
@@ -33,4 +23,21 @@ export enum Ghost {
     WRAITH = 'WRAITH',
     YOKAI = 'YOKAI',
     YUREI = 'YUREI',
+}
+
+
+export enum Evidence {
+    EMF = 'EMF',
+    ULTRAVIOLET = 'ULTRAVIOLET',
+    GHOST_WRITING = 'GHOST_WRITING',
+    FREEZING_TEMPERATURE = 'FREEZING_TEMPERATURE',
+    DOTS_PROJECTOR = 'DOTS_PROJECTOR',
+    GHOST_ORB = 'GHOST_ORB',
+    SPIRIT_BOX = 'SPIRIT_BOX',
+}
+
+export enum EvidenceState {
+    YES = 'YES',
+    NO = 'NO',
+    UNKNOWN = 'UNKNOWN',
 }

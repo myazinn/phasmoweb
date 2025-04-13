@@ -1,13 +1,3 @@
-export var Evidence;
-(function (Evidence) {
-    Evidence["EMF"] = "EMF";
-    Evidence["ULTRAVIOLET"] = "ULTRAVIOLET";
-    Evidence["GHOST_WRITING"] = "GHOST_WRITING";
-    Evidence["FREEZING_TEMPERATURE"] = "FREEZING_TEMPERATURE";
-    Evidence["DOTS_PROJECTOR"] = "DOTS_PROJECTOR";
-    Evidence["GHOST_ORB"] = "GHOST_ORB";
-    Evidence["SPIRIT_BOX"] = "SPIRIT_BOX";
-})(Evidence || (Evidence = {}));
 export var Ghost;
 (function (Ghost) {
     Ghost["BANSHEE"] = "BANSHEE";
@@ -35,3 +25,19 @@ export var Ghost;
     Ghost["YOKAI"] = "YOKAI";
     Ghost["YUREI"] = "YUREI";
 })(Ghost || (Ghost = {}));
+export var Evidence;
+(function (Evidence) {
+    Evidence["EMF"] = "EMF";
+    Evidence["ULTRAVIOLET"] = "ULTRAVIOLET";
+    Evidence["GHOST_WRITING"] = "GHOST_WRITING";
+    Evidence["FREEZING_TEMPERATURE"] = "FREEZING_TEMPERATURE";
+    Evidence["DOTS_PROJECTOR"] = "DOTS_PROJECTOR";
+    Evidence["GHOST_ORB"] = "GHOST_ORB";
+    Evidence["SPIRIT_BOX"] = "SPIRIT_BOX";
+})(Evidence || (Evidence = {}));
+export var EvidenceState;
+(function (EvidenceState) {
+    EvidenceState["YES"] = "YES";
+    EvidenceState["NO"] = "NO";
+    EvidenceState["UNKNOWN"] = "UNKNOWN";
+})(EvidenceState || (EvidenceState = {}));
