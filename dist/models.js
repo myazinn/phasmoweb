@@ -41,3 +41,9 @@ export var EvidenceState;
     EvidenceState["NO"] = "NO";
     EvidenceState["UNKNOWN"] = "UNKNOWN";
 })(EvidenceState || (EvidenceState = {}));
+export var GhostState;
+(function (GhostState) {
+    GhostState["DEFAULT"] = "default";
+    GhostState["HIGHLIGHTED"] = "highlighted";
+    GhostState["EXCLUDED"] = "excluded";
+})(GhostState || (GhostState = {}));
