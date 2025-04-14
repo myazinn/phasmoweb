@@ -1,11 +1,6 @@
-import { Evidence } from './enums';
-export const evidenceStates = Object.fromEntries(Object.values(Evidence).map((e) => [e, 'unknown']));
-export let highlightedEvidence = new Set();
-export let activeGhostHighlight = null;
-export function toggleEvidenceState(state) {
-    if (state === 'unknown')
-        return 'yes';
-    if (state === 'yes')
-        return 'no';
-    return 'unknown';
-}
+import { Evidence, EvidenceState, Ghost, GhostState } from "./models.js";
+export const evidenceStates = Object.fromEntries(Object.values(Evidence).map((e) => [e, EvidenceState.UNKNOWN]));
+export const ghostStates = Object.fromEntries(Object.values(Ghost).map((g) => [g, GhostState.DEFAULT]));
+export const sharedState = {
+    activeGhostHighlight: null,
+};

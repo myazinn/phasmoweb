@@ -1,16 +1,9 @@
 import {Evidence, EvidenceState, Ghost, GhostState} from './models.js';
 import {evidenceLabels, ghostLabels} from './labels.js';
 import {ghostEvidences} from './evidences.js';
-
-const evidenceStates: Record<Evidence, EvidenceState> = Object.fromEntries(
-    Object.values(Evidence).map((e) => [e, EvidenceState.UNKNOWN])
-) as Record<Evidence, EvidenceState>;
-
-const ghostStates: Record<Ghost, GhostState> = Object.fromEntries(
-    Object.values(Ghost).map((g) => [g, GhostState.DEFAULT])
-) as Record<Ghost, GhostState>;
-
-let activeGhostHighlight: Ghost | null = null;
+import {ghostDescriptions} from './descriptions.js';
+import {showModal} from "./modal.js";
+import {evidenceStates, ghostStates, sharedState} from "./state.js";
 
 export function renderEvidenceCheckboxes(
     updateCallback: () => void,
@@ -21,19 +14,14 @@ export function renderEvidenceCheckboxes(
 
     Object.values(Evidence).forEach((evidence) => {
         const button = document.createElement('div');
-        button.className = 'evidence-button';
         button.dataset.evidence = evidence;
         button.textContent = evidenceLabels[evidence];
 
-        if (unavailableEvidences.has(evidence)) {
-            button.classList.add('disabled-evidence');
-        }
-
-        setEvidenceStyle(button, evidenceStates[evidence], isEvidenceHighlighted(evidence));
+        setEvidenceStyle(button, evidence, unavailableEvidences);
 
         button.addEventListener('click', () => {
             evidenceStates[evidence] = toggleEvidenceState(evidenceStates[evidence]);
-            setEvidenceStyle(button, evidenceStates[evidence], isEvidenceHighlighted(evidence));
+            setEvidenceStyle(button, evidence, unavailableEvidences);
             updateCallback();
         });
 
@@ -45,6 +33,37 @@ export function renderGhosts() {
     const ghostList = document.getElementById('ghost-list')!;
     ghostList.innerHTML = '';
 
+    const possibleGhosts = findPossibleGhosts()
+    const availableEvidences = findAvailableEvidences(possibleGhosts);
+    const unavailableEvidences =
+        Object.values(Evidence).filter((e) => !availableEvidences.has(e) && evidenceStates[e] !== EvidenceState.NO);
+
+    renderEvidenceCheckboxes(renderGhosts, new Set(unavailableEvidences));
+
+    Object.values(Ghost).forEach((ghost) => {
+        const div = createGhostRow(ghost, possibleGhosts);
+        ghostList.appendChild(div);
+    });
+}
+
+function toggleEvidenceState(state: EvidenceState): EvidenceState {
+    const order = [EvidenceState.UNKNOWN, EvidenceState.YES, EvidenceState.NO];
+    return order[(order.indexOf(state) + 1) % order.length];
+}
+
+function toggleGhostState(state: GhostState): GhostState {
+    const order = [GhostState.DEFAULT, GhostState.HIGHLIGHTED, GhostState.EXCLUDED];
+    return order[(order.indexOf(state) + 1) % order.length];
+}
+
+function isEvidenceHighlighted(evidence: Evidence): boolean {
+    const ghost = sharedState.activeGhostHighlight;
+    if (!ghost) return false;
+
+    return ghostEvidences[ghost].includes(evidence);
+}
+
+function findPossibleGhosts(): Ghost[] {
     const include = Object.entries(evidenceStates)
         .filter(([, state]) => state === EvidenceState.YES)
         .map(([e]) => e as Evidence);
@@ -53,90 +72,89 @@ export function renderGhosts() {
         .filter(([, state]) => state === EvidenceState.NO)
         .map(([e]) => e as Evidence);
 
-    const possibleGhosts = Object.values(Ghost).filter((ghost) => {
+    return Object.values(Ghost).filter((ghost) => {
         const evidences = ghostEvidences[ghost];
         const hasAllIncluded = include.every((e) => evidences.includes(e));
         const hasAnyExcluded = exclude.some((e) => evidences.includes(e));
         return hasAllIncluded && !hasAnyExcluded;
     });
+}
 
-    const availableEvidences = new Set<Evidence>();
+function findAvailableEvidences(possibleGhosts: Ghost[]): Set<Evidence> {
+    const evidences = new Set<Evidence>();
     for (const ghost of possibleGhosts) {
         if (ghostStates[ghost] !== GhostState.EXCLUDED) {
             for (const ev of ghostEvidences[ghost]) {
-                availableEvidences.add(ev);
+                evidences.add(ev);
             }
         }
     }
+    return evidences;
+}
 
-    const unavailable = new Set(
-        Object.values(Evidence).filter((e) => !availableEvidences.has(e) && evidenceStates[e] !== EvidenceState.NO)
-    );
+function createGhostRow(ghost: Ghost, possibleGhosts: Ghost[]): HTMLDivElement {
+    const div = document.createElement('div');
+    div.className = 'ghost';
 
-    renderEvidenceCheckboxes(renderGhosts, unavailable);
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'ghost-name';
+    labelSpan.textContent = ghostLabels[ghost];
 
-    Object.values(Ghost).forEach((ghost) => {
-        const div = document.createElement('div');
-        div.textContent = ghostLabels[ghost];
-        div.className = 'ghost';
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'ghost-info-button';
+    infoDiv.textContent = 'Инфо';
+    infoDiv.title = 'Описание';
 
-        const state = ghostStates[ghost];
-
-        const match = possibleGhosts.includes(ghost) && state !== GhostState.EXCLUDED;
-
-        if (!match) div.classList.add('hidden');
-        if (state === GhostState.HIGHLIGHTED) div.classList.add('highlight');
-        if (state === GhostState.EXCLUDED) div.classList.add('excluded');
-
-        div.addEventListener('click', () => {
-            let nextState = toggleGhostState(state)
-            if (nextState === GhostState.EXCLUDED && ghost === activeGhostHighlight) {
-                activeGhostHighlight = null;
-            }
-            if (nextState === GhostState.HIGHLIGHTED && ghost !== activeGhostHighlight) {
-                if (activeGhostHighlight) {
-                    ghostStates[activeGhostHighlight] = GhostState.DEFAULT;
-                }
-                activeGhostHighlight = ghost;
-            }
-            ghostStates[ghost] = nextState
-            renderGhosts();
-        });
-
-        ghostList.appendChild(div);
+    infoDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showGhostDescription(ghost);
     });
+
+    div.appendChild(labelSpan);
+    div.appendChild(infoDiv);
+
+    const state = ghostStates[ghost];
+    const match = possibleGhosts.includes(ghost) && state !== GhostState.EXCLUDED;
+
+    if (!match) div.classList.add('hidden');
+    if (state === GhostState.HIGHLIGHTED) div.classList.add('highlight');
+    if (state === GhostState.EXCLUDED) div.classList.add('excluded');
+
+    div.addEventListener('click', () => {
+        const nextState = toggleGhostState(state);
+
+        if (nextState === GhostState.EXCLUDED && ghost === sharedState.activeGhostHighlight) {
+            sharedState.activeGhostHighlight = null;
+        }
+
+        if (nextState === GhostState.HIGHLIGHTED && ghost !== sharedState.activeGhostHighlight) {
+            if (sharedState.activeGhostHighlight) {
+                ghostStates[sharedState.activeGhostHighlight] = GhostState.DEFAULT;
+            }
+            sharedState.activeGhostHighlight = ghost;
+        }
+
+        ghostStates[ghost] = nextState;
+        renderGhosts();
+    });
+
+    return div;
 }
 
-function toggleEvidenceState(state: EvidenceState): EvidenceState {
-    if (state === EvidenceState.UNKNOWN) return EvidenceState.YES;
-    if (state === EvidenceState.YES) return EvidenceState.NO;
-    return EvidenceState.UNKNOWN;
+
+function showGhostDescription(ghost: Ghost) {
+    showModal(ghostDescriptions[ghost]);
 }
 
-function toggleGhostState(state: GhostState): GhostState {
-    if (state === GhostState.DEFAULT) return GhostState.HIGHLIGHTED;
-    if (state === GhostState.HIGHLIGHTED) return GhostState.EXCLUDED;
-    return GhostState.DEFAULT;
-}
+function setEvidenceStyle(el: HTMLElement, evidence: Evidence, unavailableEvidences: Set<Evidence>) {
+    el.className = 'evidence-button';
+    el.classList.remove('evidence-unknown', 'evidence-yes', 'evidence-no', 'evidence-highlight', 'evidence-disabled');
 
-function isEvidenceHighlighted(evidence: Evidence): boolean {
-    return Object.entries(ghostStates).some(
-        ([ghost, state]) =>
-            state === GhostState.HIGHLIGHTED &&
-            ghostEvidences[ghost as Ghost].includes(evidence)
-    );
-}
-
-function setEvidenceStyle(el: HTMLElement, state: EvidenceState, highlighted: boolean) {
-    el.classList.remove('evidence-unknown', 'evidence-yes', 'evidence-no');
-
+    const state = evidenceStates[evidence]
     if (state === EvidenceState.UNKNOWN) el.classList.add('evidence-unknown');
     if (state === EvidenceState.YES) el.classList.add('evidence-yes');
     if (state === EvidenceState.NO) el.classList.add('evidence-no');
 
-    if (highlighted) {
-        el.classList.add('highlight');
-    } else {
-        el.classList.remove('highlight');
-    }
+    if (isEvidenceHighlighted(evidence)) el.classList.add('evidence-highlight');
+    if (unavailableEvidences.has(evidence)) el.classList.add('evidence-disabled');
 }
