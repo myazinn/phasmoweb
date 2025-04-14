@@ -41,3 +41,9 @@ export enum EvidenceState {
     NO = 'NO',
     UNKNOWN = 'UNKNOWN',
 }
+
+export enum GhostState {
+    DEFAULT = 'default',
+    HIGHLIGHTED = 'highlighted',
+    EXCLUDED = 'excluded',
+}
