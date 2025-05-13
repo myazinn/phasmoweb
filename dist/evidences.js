@@ -2,7 +2,7 @@ import { Evidence, Ghost } from './models.js';
 export const ghostEvidences = {
     [Ghost.BANSHEE]: [Evidence.DOTS_PROJECTOR, Evidence.GHOST_ORB, Evidence.ULTRAVIOLET],
     [Ghost.DEMON]: [Evidence.GHOST_WRITING, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
-    [Ghost.DEOGEN]: [Evidence.GHOST_WRITING, Evidence.ULTRAVIOLET, Evidence.SPIRIT_BOX],
+    [Ghost.DEOGEN]: [Evidence.GHOST_WRITING, Evidence.DOTS_PROJECTOR, Evidence.SPIRIT_BOX],
     [Ghost.GORYO]: [Evidence.DOTS_PROJECTOR, Evidence.EMF, Evidence.ULTRAVIOLET],
     [Ghost.HANTU]: [Evidence.GHOST_ORB, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
     [Ghost.JINN]: [Evidence.EMF, Evidence.ULTRAVIOLET, Evidence.FREEZING_TEMPERATURE],
